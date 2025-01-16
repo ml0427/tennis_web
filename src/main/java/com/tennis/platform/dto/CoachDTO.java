@@ -12,7 +12,7 @@ public class CoachDTO {
     private String certificates;
     private String specialties;
     private String locations;
-    private BigDecimal hourlyRate;
+    private Integer hourlyRate;
     private String availableTime;
     private Double rating;
     private Integer totalRatings;

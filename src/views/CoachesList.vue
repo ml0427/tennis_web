@@ -52,7 +52,7 @@
                 <span class="text-indigo-600 font-medium">
                   NT$ {{ coach.hourlyRate || '未設定' }}/小時
                 </span>
-                <el-button type="primary" size="small" @click="bookLesson(coach)">
+                <el-button type="primary" size="small" @click="bookLesson(Number(coach.id))">
                   預約課程
                 </el-button>
               </div>
@@ -119,11 +119,15 @@ import { ElMessage } from 'element-plus'
 import api from '@/api'
 
 interface Coach {
-  id: number
-  username: string
+  id?: number
+  username?: string
   experience?: string
-  rating: number
+  certificates?: string
+  specialties?: string
+  locations?: string
+  rating?: number
   hourlyRate?: number
+  availableTime?: string
 }
 
 const search = ref('')
@@ -149,14 +153,21 @@ const filteredCoaches = computed(() => {
   if (!search.value) return coaches.value
   const searchLower = search.value.toLowerCase()
   return coaches.value.filter(coach => 
-    coach.username.toLowerCase().includes(searchLower)
+    coach.username && coach.username.toLowerCase().includes(searchLower)
   )
 })
 
 const fetchCoaches = async () => {
   try {
     const response = await api.get('/api/coaches')
-    coaches.value = response.data
+    console.log("response >>>> ",response.data)
+    coaches.value = response.data.map((coach: Coach) => {
+      if (typeof coach.rating === 'string') {
+        const rating = Number(coach.rating);
+        coach.rating = isNaN(rating) ? 0 : rating;
+      }
+      return coach;
+    });
   } catch (err: any) {
     ElMessage.error('獲取教練列表失敗')
   }
@@ -210,4 +221,4 @@ onMounted(fetchCoaches)
 .coach-card:hover {
   transform: translateY(-4px);
 }
-</style> 
+</style>

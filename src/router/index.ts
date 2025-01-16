@@ -40,15 +40,28 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const token = localStorage.getItem('token')
+import { useUserStore } from '../store/user'
 
-  if (requiresAuth && !token) {
-    next('/login')
+
+
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const userStore = useUserStore()
+
+  if (requiresAuth) {
+    try {
+      // 嘗試獲取用戶信息，如果 session 無效會拋出錯誤
+      if (!userStore.user) {
+        await userStore.fetchUserInfo()
+      }
+      next()
+    } catch (error) {
+      userStore.isAuthenticated = false
+      next('/login')
+    }
   } else {
     next()
   }
 })
 
-export default router 
+export default router

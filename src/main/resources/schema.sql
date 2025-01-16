@@ -1,14 +1,13 @@
--- 創建用戶表
+-- 創建用戶表（如果不存在）
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(100) NOT NULL,
     role VARCHAR(20) NOT NULL,
     created_at TIMESTAMP NOT NULL
 );
 
--- 創建教練表
+-- 創建教練表（如果不存在）
 CREATE TABLE IF NOT EXISTS coaches (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL UNIQUE,
@@ -16,14 +15,14 @@ CREATE TABLE IF NOT EXISTS coaches (
     certificates TEXT,
     specialties TEXT,
     locations TEXT,
-    hourly_rate DECIMAL(10,2),
+    hourly_rate INTEGER,
     available_time TEXT,
     rating DOUBLE NOT NULL DEFAULT 0,
     total_ratings INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- 創建預約表
+-- 創建預約表（如果不存在）
 CREATE TABLE IF NOT EXISTS bookings (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     student_id BIGINT NOT NULL,

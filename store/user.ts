@@ -2,8 +2,7 @@ import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    userInfo: null,
-    token: null
+    userInfo: null
   }),
   
   actions: {
@@ -13,11 +12,7 @@ export const useUserStore = defineStore('user', {
     
     async fetchUserInfo() {
       try {
-        const response = await fetch('/api/user/info', {
-          headers: {
-            'Authorization': `Bearer ${this.token}`
-          }
-        })
+        const response = await fetch('/api/user/info')
         const data = await response.json()
         this.setUserInfo(data)
       } catch (error) {

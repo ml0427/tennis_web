@@ -1,6 +1,5 @@
 package com.tennis.platform.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -27,10 +26,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
-    private String password;
+    @Column(unique = true)
     private String email;
-    private String role; // ROLE_STUDENT 或 ROLE_COACH
+
+    private String password;
+    private String role;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;

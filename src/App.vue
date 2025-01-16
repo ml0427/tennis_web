@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
@@ -80,9 +80,11 @@ import {
   User,
   SwitchButton
 } from '@element-plus/icons-vue'
+import { useUserStore } from '@/store/user'
 
 const router = useRouter()
 const isLoggedIn = computed(() => !!localStorage.getItem('token'))
+const userStore = useUserStore()
 
 const handleLogout = () => {
   localStorage.removeItem('token')
@@ -90,6 +92,16 @@ const handleLogout = () => {
   ElMessage.success('已成功登出')
   router.push('/login')
 }
+
+onMounted(async () => {
+  if (userStore.isAuthenticated) {
+    try {
+      await userStore.fetchUserInfo()
+    } catch (error) {
+      console.error('Failed to fetch user info:', error)
+    }
+  }
+})
 </script>
 
 <style>

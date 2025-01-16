@@ -16,7 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Getter
@@ -40,7 +39,8 @@ public class Coach {
     private String certificates;
     private String specialties;
     private String locations;
-    private BigDecimal hourlyRate;
+    @Column(name = "hourly_rate")
+    private Integer hourlyRate;
     private String availableTime;
     private Double rating;
     

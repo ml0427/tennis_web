@@ -73,12 +73,11 @@
             </el-form-item>
 
             <el-form-item label="時薪" prop="hourlyRate">
-              <el-input-number 
-                v-model="form.hourlyRate"
-                :min="0"
-                :step="100"
-                class="w-full"
-              />
+              <select v-model="form.hourlyRate" class="form-control" id="hourlyRate">
+                <option v-for="rate in hourlyRates" :key="rate" :value="rate">
+                  {{ rate }} 元
+                </option>
+              </select>
             </el-form-item>
 
             <el-form-item label="可授課時間" prop="availableTime">
@@ -137,7 +136,8 @@ const fetchProfile = async () => {
   try {
     const data = await userStore.fetchUserInfo()
     Object.assign(form, data)
-  } catch (err) {
+  } catch (err: any) {
+    console.error('Fetch profile failed:', err)
     ElMessage.error('獲取個人資料失敗')
   }
 }
@@ -149,11 +149,24 @@ const saveProfile = async () => {
     await formRef.value.validate()
     loading.value = true
     
-    await userStore.updateProfile(form)
+    const formData = {
+      email: form.email,
+      role: form.role,
+      experience: form.experience,
+      certificates: form.certificates,
+      specialties: form.specialties,
+      locations: form.locations,
+      hourlyRate: Number(form.hourlyRate),
+      availableTime: form.availableTime
+    }
+    
+    await userStore.updateProfile(formData)
+    await fetchProfile()
     ElMessage.success('更新成功')
     isEditing.value = false
   } catch (err: any) {
-    ElMessage.error(err.response?.data || '更新失敗')
+    console.error('Save profile failed:', err)
+    ElMessage.error(err.response?.data?.message || '更新失敗')
   } finally {
     loading.value = false
   }
@@ -163,6 +176,8 @@ const cancelEdit = () => {
   isEditing.value = false
   fetchProfile() // 重新獲取資料，放棄修改
 }
+
+const hourlyRates = Array.from({ length: 31 }, (_, i) => (i + 5) * 100) // 500 到 3500，間隔 100
 
 onMounted(fetchProfile)
 </script>

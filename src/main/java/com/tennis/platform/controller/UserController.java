@@ -1,13 +1,18 @@
 package com.tennis.platform.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import com.tennis.platform.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.tennis.platform.dto.UserDTO;
-import com.tennis.platform.dto.LoginDTO;
 import com.tennis.platform.model.User;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -20,46 +25,14 @@ public class UserController {
         this.userService = userService;
     }
     
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
-        try {
-            User user = userService.registerUser(userDTO);
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
-        try {
-            String token = userService.login(loginDTO);
-            Map<String, String> response = new HashMap<>();
-            response.put("token", token);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @GetMapping("/profile")
-    public ResponseEntity<?> getProfile() {
-        try {
-            UserDTO profile = userService.getCurrentUserProfile();
-            return ResponseEntity.ok(profile);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<UserDTO> getCurrentUserProfile() {
+        return ResponseEntity.ok(userService.getCurrentUserProfile());
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<?> updateProfile(@RequestBody UserDTO userDTO) {
-        try {
-            UserDTO updatedProfile = userService.updateProfile(userDTO);
-            return ResponseEntity.ok(updatedProfile);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<UserDTO> updateProfile(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(userService.updateProfile(userDTO));
     }
 
     @GetMapping("/{username}")

@@ -14,13 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// 教練
 @RestController
 @RequestMapping("/api/coaches")
 @CrossOrigin(origins = "http://localhost:8080")
 public class CoachController {
 
-    @Autowired
-    private CoachService coachService;
+    private final CoachService coachService;
+
+    public CoachController(CoachService coachService) {
+        this.coachService = coachService;
+    }
 
     @GetMapping
     public ResponseEntity<List<CoachDTO>> getAllCoaches() {

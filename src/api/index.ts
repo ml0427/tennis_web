@@ -6,25 +6,41 @@ const api = axios.create({
     withCredentials: true
 })
 
-// 添加請求攔截器
-api.interceptors.request.use(config => {
-    const token = localStorage.getItem('token')
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+// 請求攔截器
+api.interceptors.request.use(
+    (config) => {
+        console.log('Request:', {
+            url: config.url,
+            method: config.method,
+            data: config.data,
+            headers: config.headers
+        });
+        return config
+    },
+    (error) => {
+        console.error('Request error:', error)
+        return Promise.reject(error)
     }
-    return config
-}, error => {
-    return Promise.reject(error)
-})
+)
 
-// 添加響應攔截器
+// 響應攔截器
 api.interceptors.response.use(
-    response => response,
-    error => {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-            localStorage.removeItem('token')
-            window.location.href = '/login'
-        }
+    (response) => {
+        console.log('Response:', {
+            url: response.config.url,
+            status: response.status,
+            data: response.data
+        });
+        return response
+    },
+    (error) => {
+        console.error('Response error:', {
+            error,
+            config: error.config,
+            response: error.response,
+            data: error.response?.data
+        });
+        // 401錯誤由組件自行處理，不在此強制重定向
         return Promise.reject(error)
     }
 )
