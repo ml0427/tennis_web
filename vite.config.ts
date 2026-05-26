@@ -3,14 +3,10 @@ import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
 export default defineConfig({
+  base: '/tennis_web/',
   plugins: [vue()],
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8081',
-        changeOrigin: true
-      }
-    }
+  build: {
+    outDir: 'docs'
   },
   resolve: {
     alias: {
